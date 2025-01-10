@@ -1,0 +1,14 @@
+class Solution {
+public:
+    bool checkOverlap(int radius, int xCenter, int yCenter, int x1, int y1, int x2, int y2) {
+        int closestX =max(x1, std::min(xCenter, x2));
+        int closestY = max(y1, std::min(yCenter, y2));
+        
+        int distanceX = xCenter - closestX;
+        int distanceY = yCenter - closestY;
+        
+        int distanceSquared = distanceX * distanceX + distanceY * distanceY;
+        
+        return distanceSquared <= radius * radius;
+    }
+};
