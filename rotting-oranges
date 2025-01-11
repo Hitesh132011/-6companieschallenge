@@ -1,0 +1,58 @@
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+class Solution {
+public:
+    int orangesRotting(vector<vector<int>>& grid) {
+        queue<pair<pair<int, int>, int>> pq;
+        int n = grid.size();
+        int m = grid[0].size();
+        vector<vector<int>> p(n, vector<int>(m, 0));
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                if (grid[i][j] == 2) {
+                    pq.push({{i, j}, 0});
+                }
+            }
+        }
+
+        int k = 0;
+        while (!pq.empty()) {
+            int r = pq.front().first.first;
+            int c = pq.front().first.second;
+            int l = pq.front().second;
+            k = l;
+            pq.pop();
+
+            if (r + 1 < n && grid[r + 1][c] == 1 && p[r + 1][c] == 0) {
+                p[r + 1][c] = 1;
+                pq.push({{r + 1, c}, l + 1});
+            }
+            if (r - 1 >= 0 && grid[r - 1][c] == 1 && p[r - 1][c] == 0) {
+                p[r - 1][c] = 1;
+                pq.push({{r - 1, c}, l + 1});
+            }
+            if (c - 1 >= 0 && grid[r][c - 1] == 1 && p[r][c - 1] == 0) {
+                p[r][c - 1] = 1;
+                pq.push({{r, c - 1}, l + 1});
+            }
+            if (c + 1 < m && grid[r][c + 1] == 1 && p[r][c + 1] == 0) {
+                p[r][c + 1] = 1;
+                pq.push({{r, c + 1}, l + 1});
+            }
+        }
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                if (grid[i][j] == 1 && p[i][j] == 0) {
+                    return -1; 
+                }
+            }
+        }
+
+        return k;
+    }
+};
