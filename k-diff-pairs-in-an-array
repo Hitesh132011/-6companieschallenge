@@ -1,0 +1,33 @@
+class Solution {
+public:
+    int findPairs(vector<int>& nums, int k) {
+        unordered_map<int, int> mp;
+        int n = nums.size();
+        for (int i = 0; i < n; ++i) {
+            mp[nums[i]]++;
+        }
+
+        int c = 0;
+        set<pair<int, int>> st;
+
+        for (auto it : mp) {
+            if (k == 0) {
+                if (it.second >= 2)
+                    c++;
+                continue;
+            }
+
+            if (mp.find(it.first - k) != mp.end()) {
+                st.insert({min(it.first, it.first - k), max(it.first, it.first - k)});
+            }
+            if (mp.find(it.first + k) != mp.end()) {
+                st.insert({min(it.first, it.first + k), max(it.first, it.first + k)});
+            }
+        }
+
+        if (k == 0)
+            return c;
+        
+        return st.size();
+    }
+};
