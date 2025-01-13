@@ -1,0 +1,55 @@
+#define ll long long
+class Solution {
+public:
+    int memo[1001][1024];
+    vector<int> primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+    const int mod = 1000000007;
+
+    ll solve(vector<int>& nums, int i, int mask) {
+        if (i == nums.size())
+            return 1;
+
+        if (memo[i][mask] != -1)
+            return memo[i][mask];
+
+        int num = nums[i];
+        int tempMask = mask;
+        bool isSquareFree = true;
+
+        for (int j = 0; j < 10; ++j) {
+            int prime = primes[j];
+            int count = 0;
+
+            while (num % prime == 0) {
+                num /= prime;
+                count++;
+            }
+
+            if (count >= 2) {
+                isSquareFree = false;
+                break;
+            }
+
+            if (count == 1) {
+                if ((mask >> j) & 1) {
+                    isSquareFree = false;
+                    break;
+                }
+                tempMask |= (1 << j);
+            }
+        }
+
+        if (isSquareFree) {
+            memo[i][mask] = (solve(nums, i + 1, mask) + solve(nums, i + 1, tempMask)) % mod;
+        } else {
+            memo[i][mask] = solve(nums, i + 1, mask);
+        }
+
+        return memo[i][mask];
+    }
+
+    int squareFreeSubsets(vector<int>& nums) {
+        memset(memo, -1, sizeof(memo));
+        return (solve(nums, 0, 0) - 1 + mod) % mod;
+    }
+};
