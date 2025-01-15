@@ -1,0 +1,69 @@
+#include <unordered_map>
+
+class LRUCache {
+public:
+    class Node {
+    public:
+        int key;
+        int val;
+        Node* next;
+        Node* prev;
+        Node(int _key, int _val) : key(_key), val(_val), next(nullptr), prev(nullptr) {}
+    };
+
+    int capacity;
+    Node *head;
+    Node *tail;
+    std::unordered_map<int, Node*> mp;
+
+    LRUCache(int capacity) {
+        this->capacity = capacity;
+        head = new Node(-1, -1);
+        tail = new Node(-1, -1);
+        head->next = tail;
+        tail->prev = head;
+    }
+
+    void addNode(Node *child) {
+        Node* temp = head->next;
+        child->next = temp;
+        child->prev = head;
+        head->next = child;
+        temp->prev = child;
+    }
+
+    void deleteNode(Node *del) {
+        Node* prevNode = del->prev;
+        Node* nextNode = del->next;
+        prevNode->next = nextNode;
+        nextNode->prev = prevNode;
+    }
+
+    int get(int key) {
+        if (mp.find(key) != mp.end()) {
+            Node* node = mp[key];
+            int result = node->val;
+            deleteNode(node);
+            addNode(node);
+            mp[key] = head->next;
+            return result;
+        }
+        return -1;
+    }
+
+    void put(int key, int value) {
+        if (mp.find(key) != mp.end()) {
+            Node* existingNode = mp[key];
+            deleteNode(existingNode);
+            mp.erase(key);
+        }
+
+        if (mp.size() == capacity) {
+            mp.erase(tail->prev->key);
+            deleteNode(tail->prev);
+        }
+
+        addNode(new Node(key, value));
+        mp[key] = head->next;
+    }
+};
