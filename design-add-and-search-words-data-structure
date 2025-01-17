@@ -1,0 +1,51 @@
+#include <unordered_map>
+#include <string>
+using namespace std;
+
+class WordDictionary {
+public:
+    struct Trie {
+        unordered_map<char, Trie*> mp;
+        bool isEnd = false;
+    };
+
+    Trie* root;
+
+    WordDictionary() {
+        root = new Trie();
+    }
+
+    void addWord(string word) {
+        Trie* node = root;
+        for (char ch : word) {
+            if (!node->mp[ch]) {
+                node->mp[ch] = new Trie();
+            }
+            node = node->mp[ch];
+        }
+        node->isEnd = true;
+    }
+
+    bool search(string word) {
+        return solve(word, 0, root);
+    }
+
+private:
+    bool solve(string& word, int i, Trie* node) {
+        if (i == word.size()) 
+            return node->isEnd;
+
+        char ch = word[i];
+        if (ch == '.') {
+            for (auto& child : node->mp) {
+                if (solve(word, i + 1, child.second)) 
+                    return true;
+            }
+            return false;
+        } else {
+            if (!node->mp.count(ch)) 
+                return false;
+            return solve(word, i + 1, node->mp[ch]);
+        }
+    }
+};
