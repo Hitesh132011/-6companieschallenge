@@ -1,0 +1,28 @@
+class Solution {
+public:
+    unordered_map<string, int> mp;
+    vector<int> dp;
+
+    int solve(int i, string s) {
+        if (i >= s.length())
+            return 0;
+        if (dp[i] != -1)
+            return dp[i];
+        int ans = INT_MAX;
+        string k = "";
+        for (int j = i; j < s.length(); ++j) {
+            k.push_back(s[j]);
+            int count = ((mp[k] ? 0 : k.length()) + solve(j + 1, s));
+            ans = min(ans, count);
+        }
+        return dp[i] = ans;
+    }
+
+    int minExtraChar(string s, vector<string>& dictionary) {
+        dp.resize(s.length(), -1);
+        for (auto& it : dictionary) {
+            mp[it]++;
+        }
+        return solve(0, s);
+    }
+};
