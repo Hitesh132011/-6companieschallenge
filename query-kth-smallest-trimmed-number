@@ -1,0 +1,22 @@
+class Solution {
+public:
+    vector<int> smallestTrimmedNumbers(vector<string>& nums, vector<vector<int>>& queries) {
+        vector<int> ans;
+        for (auto& query : queries) {
+            int k = query[0];
+            int trim = query[1];
+            priority_queue<pair<string, int>> pq;
+            for (int j = 0; j < nums.size(); ++j) {
+                string trimmed = nums[j].substr(nums[j].size() - trim);
+                pq.push({trimmed, j});
+                if (pq.size() > k) {
+                    pq.pop();
+                }
+            }
+
+            ans.push_back(pq.top().second);
+        }
+
+        return ans;
+    }
+};
