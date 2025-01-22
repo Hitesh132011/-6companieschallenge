@@ -1,0 +1,44 @@
+
+class Solution {
+public:
+    bool isSafe(vector<vector<char>>& board, int cur_row, int cur_col, char value){
+        //row check
+        for(int i=0; i<9; i++){
+            if(board[i][cur_col] == value && i != cur_row){
+                return false;
+            }
+        }
+
+        //column check
+        for(int i=0; i<9; i++){
+            if(board[cur_row][i] == value && i != cur_col){
+                return false;
+            }
+        }
+
+        //3x3 matrix check
+        for(int i=0; i<9; i++){
+            int x = 3*(cur_row/3)+(i/3);
+            int y = 3*(cur_col/3)+(i%3);
+            if(board[x][y] == value && x != cur_row && y != cur_col){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    bool isValidSudoku(vector<vector<char>>& board) {
+        for(int i=0; i<9; i++){
+            for(int j=0; j<9; j++){
+                if(board[i][j] != '.'){
+                    if(isSafe(board, i, j, board[i][j]) == false){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+};
